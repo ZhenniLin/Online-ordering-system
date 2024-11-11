@@ -46,11 +46,14 @@ public class EmployeeController {
         //登录成功后，生成jwt令牌
         Map<String, Object> claims = new HashMap<>();
         claims.put(JwtClaimsConstant.EMP_ID, employee.getId());
+        // 创建了一个token - 三个参数 key / time / claims
+        // jwtProperties是封装的配置累
         String token = JwtUtil.createJWT(
                 jwtProperties.getAdminSecretKey(),
                 jwtProperties.getAdminTtl(),
                 claims);
 
+        //封装成VO 返回给前端
         EmployeeLoginVO employeeLoginVO = EmployeeLoginVO.builder()
                 .id(employee.getId())
                 .userName(employee.getUsername())
@@ -58,6 +61,7 @@ public class EmployeeController {
                 .token(token)
                 .build();
 
+        // 把返回给前端的数据同一封装到result
         return Result.success(employeeLoginVO);
     }
 
