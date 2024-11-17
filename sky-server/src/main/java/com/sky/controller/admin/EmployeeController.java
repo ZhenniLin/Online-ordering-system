@@ -15,6 +15,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -33,15 +34,16 @@ public class EmployeeController {
     private EmployeeService employeeService;
     @Autowired
     private JwtProperties jwtProperties;
+    private ServerProperties serverProperties;
 
     /**
-     * 登录
+     * login
      *
      * @param employeeLoginDTO
      * @return
      */
     @PostMapping("/login")
-    @ApiOperation(value = "员工登录")
+    @ApiOperation(value = "employ-login")
     public Result<EmployeeLoginVO> login(@RequestBody EmployeeLoginDTO employeeLoginDTO) {
         log.info("员工登录：{}", employeeLoginDTO);
 
@@ -70,24 +72,24 @@ public class EmployeeController {
     }
 
     /**
-     * 退出
+     * exit
      *
      * @return
      */
     @PostMapping("/logout")
-    @ApiOperation(value = "员工退出")
+    @ApiOperation(value = "employee-logout")
     public Result<String> logout() {
         return Result.success();
     }
 
 
     /**
-     * 新增员工
+     * add
      * @param employeeDTO
      * @return
      */
     @PostMapping
-    @ApiOperation(value = "新增员工")
+    @ApiOperation(value = "employee-add")
     public Result save(@RequestBody EmployeeDTO employeeDTO) {
         log.info("新增员工: {}", employeeDTO);
         employeeService.save(employeeDTO);
@@ -95,18 +97,58 @@ public class EmployeeController {
     }
 
     /**
-     * 员工分页查询
+     * search by page
      * @param employeePageQueryDTO
      * @return
      */
     @GetMapping("/page")
-    @ApiOperation("员工分页查询")
+    @ApiOperation("employee-search by pages")
     public Result<PageResult> page(EmployeePageQueryDTO employeePageQueryDTO) {
         log.info("员工分页查询：参数为:{}", employeePageQueryDTO);
 
         PageResult pageResult = employeeService.pageQuery(employeePageQueryDTO);
 
         return Result.success(pageResult);
+    }
+
+
+    /**
+     * enable and disable employee account
+     * @param status
+     * @param id
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("employee-enable and disable account")
+    public Result startOrStop (@PathVariable Integer status, Long id) {
+        log.info("enable and disable employee account: {}, {}", status, id);
+        employeeService.startOrStop(status, id);
+        return Result.success();
+    }
+
+    /**
+     * search employ's information by id
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    @ApiOperation("employ-search by id")
+    public Result<Employee> getById(@PathVariable Long id) {
+        Employee employee = employeeService.getById(id);
+        return Result.success(employee);
+    }
+
+    /**
+     * update employee information
+     * @param employeeDTO
+     * @return
+     */
+    @PutMapping
+    @ApiOperation("employ-update")
+    public Result update(@RequestBody EmployeeDTO employeeDTO) {
+        log.info("update employee information: {}", employeeDTO);
+        employeeService.update(employeeDTO);
+        return Result.success();
     }
 
 }
