@@ -27,14 +27,13 @@ import java.util.Map;
 @RestController
 @RequestMapping("/admin/employee")
 @Slf4j
-@Api(tags = "员工相关接口")
+@Api(tags = "employee")
 public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
     @Autowired
     private JwtProperties jwtProperties;
-    private ServerProperties serverProperties;
 
     /**
      * login
